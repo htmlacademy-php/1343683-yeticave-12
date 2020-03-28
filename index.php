@@ -1,8 +1,24 @@
-<?php
-$is_auth = rand(0, 1);
+<?php            
+function setPrice ($initial_number) 
+{ 
+    $rounded_number = ceil($initial_number);
 
+    if ($rounded_number >= 1000) {
+        $formatted_number = number_format($rounded_number, 0, ',', ' ');
+        $final_number = $formatted_number;
+    } else {
+        $final_number = $rounded_number;        
+    }
+
+    $final_number_string = (string)($final_number);
+    $final_number_string = $final_number_string . " " . "₽";
+    echo ($final_number_string);
+}           
+
+$is_auth = rand(0, 1);
 $user_name = 'Сергей'; // укажите здесь ваше имя
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -117,24 +133,6 @@ $announcement = [
         </div>
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
-
-        <?php            
-            function set_price ($initial_number) 
-            { 
-                $rounded_number = ceil($initial_number);
-                if ($rounded_number >= 1000) {
-                    $formatted_number = number_format($rounded_number, 0, ',', ' ');
-                    $final_number = $formatted_number;
-                }
-                else {
-                    $final_number = $rounded_number;        
-                }
-                $final_number_string = (string)($final_number);
-                $final_number_string = $final_number_string . " " . "₽";
-                echo ($final_number_string);
-            }           
-        ?>
-
             <?php foreach ($announcement as $key => $val): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
@@ -146,7 +144,7 @@ $announcement = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?php set_price($val['price']); ?></span>
+                            <span class="lot__cost"><?php setPrice($val['price']); ?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
