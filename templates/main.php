@@ -35,8 +35,9 @@
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost"><?php setPrice($val['price']); ?></span>
                         </div>
-                        <div class="lot__timer timer">
-                            12:23
+                        <?php [$hours, $mins] = getTimeExp($val['last_day']); ?>
+                        <div class="lot__timer timer <?php if($hours < 10) echo 'timer--finishing'; ?>">
+                        <?php printTimeExp($hours, $mins); ?>                                                                               
                         </div>
                     </div>
                 </div>
