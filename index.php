@@ -1,54 +1,38 @@
 <?php
+$categories = [];
+$content = '';
 $user_name = 'Сергей';
 
-$categories = [
-    "Доски и лыжи", "Крепления", "Ботинки", "Одежда", "Инструменты", "Разное"
-];
+$link = mysqli_connect("yeticave", "root", "", "yeticave");
+mysqli_set_charset($link, "utf8");
+if (!$link) {
+    echo ("Ошибка подключения: " . mysqli_connect_error());
+}
+else {
+    $sql = 'SELECT * FROM categories';
+    $result = mysqli_query($link, $sql);
+}
 
-$announcement = [
-    [
-        'title' => '2014 Rossignol District Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => 10199,
-        'pictures_url' => 'img/lot-1.jpg',
-        'last_day' => '2020-04-20'
-    ],
-    [
-        'title' => 'DC Ply Mens 2016/2017 Snowboard',
-        'category' => 'Доски и лыжи',
-        'price' => 159999,
-        'pictures_url' => 'img/lot-2.jpg',
-        'last_day' => '2020-04-20'
-    ],
-    [
-        'title' => 'Крепления Union Contact Pro 2015 года размер L/XL',
-        'category' => 'Крепления',
-        'price' => 8000,
-        'pictures_url' => 'img/lot-3.jpg',
-        'last_day' => '2020-04-22'
-    ],
-    [
-        'title' => 'Ботинки для сноуборда DC Mutiny Charocal',
-        'category' => 'Ботинки',
-        'price' => 10999,
-        'pictures_url' => 'img/lot-4.jpg',
-        'last_day' => '2020-04-30'
-    ],
-    [
-        'title' => 'Куртка для сноуборда DC Mutiny Charocal',
-        'category' => 'Одежда',
-        'price' => 7500,
-        'pictures_url' => 'img/lot-5.jpg',
-        'last_day' => '2020-04-30'
-    ],
-    [
-        'title' => 'Маска Oakley Canopy',
-        'category' => 'Разное',
-        'price' => 5400,
-        'pictures_url' => 'img/lot-6.jpg',
-        'last_day' => '2020-04-30'
-    ]
-];
+if ($result) {
+    $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+else {
+    echo("Ошибка MySQL: " . mysqli_error($link));
+}
+
+
+$sql_2 = "SELECT l.id, l.title, l.price_init, l.image, c.cat_name, l.date_exp
+FROM lots as l
+JOIN categories as c ON c.id = l.cat_id
+WHERE l.date_exp > NOW()
+ORDER BY l.pub_date DESC LIMIT 9";
+$result2 = mysqli_query($link, $sql_2);
+if ($result2) {
+    $announcement = mysqli_fetch_all($result2, MYSQLI_ASSOC);
+}
+else {
+    echo("Ошибка MySQL: " . mysqli_error($link));
+}
 
 $page_content = include_template('main.php', [
     'categories' => $categories,
@@ -102,7 +86,7 @@ function printTimeExp($hours, $mins)
     elseif ($mins < 10)
         echo ($hours. ":" ."0".$mins);
     else
-    echo ($hours. ":" .$mins);
+        echo ($hours. ":" .$mins);
 }
 
 function include_template($name, $data) {
